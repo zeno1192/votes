@@ -1,13 +1,25 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
 import { getFirestore, collection, getDocs, setDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js";
 
-// Firestore 初期化
-const db = getFirestore();
+// Firebase 構成情報
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+// Firebase 初期化
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 // HTML 要素
-const resultsTableBody = document.getElementById('resultsTableBody');
-const errorDiv = document.getElementById('error');
+const resultsTableBody = document.getElementById("resultsTableBody");
+const errorDiv = document.getElementById("error");
 
-// Votesを集計し、Resultsに保存する関数
+// Votesコレクションを集計し、Resultsコレクションに保存する関数
 async function aggregateVotesToResults() {
   try {
     const votesSnapshot = await getDocs(collection(db, "Votes"));
@@ -30,17 +42,18 @@ async function aggregateVotesToResults() {
       await setDoc(doc(db, "Results", teamName), {
         teamName,
         points,
-        timestamp: serverTimestamp(), // 最新のタイムスタンプを追加
+        timestamp: serverTimestamp(), // 最新のタイムスタンプを記録
       });
     }
 
     console.log("Votesの集計が完了し、Resultsに保存されました！");
   } catch (error) {
     console.error("Votes集計中にエラーが発生しました:", error);
+    errorDiv.textContent = "集計中にエラーが発生しました。";
   }
 }
 
-// Resultsを取得し、テーブルに表示する関数
+// Resultsコレクションを取得し、テーブルに表示する関数
 async function loadResults() {
   try {
     const resultsSnapshot = await getDocs(collection(db, "Results"));
@@ -79,7 +92,7 @@ async function loadResults() {
 }
 
 // ページ読み込み時に実行
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener("DOMContentLoaded", async () => {
   await aggregateVotesToResults(); // Votesを集計してResultsに保存
   await loadResults(); // Resultsを読み込んで表示
 });
