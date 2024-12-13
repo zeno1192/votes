@@ -32,7 +32,7 @@ body::before {
   height: 100%;
   z-index: 1; /* 背景の上に表示する */
   pointer-events: none; /* 他の要素に干渉しない */
-  background-image: url("https://example.com/christmas-wreath-border.png"); /* リース風画像を指定 */
+  background-image: url("https://www.publicdomainpictures.net/pictures/320000/nahled/christmas-wreath.png"); /* リース風画像を指定 */
   background-size: contain; /* 縮小して枠を囲む */
   background-repeat: repeat; /* 繰り返して縁全体を囲む */
   opacity: 0.8; /* 透明度を設定 */
