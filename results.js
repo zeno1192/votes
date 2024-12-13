@@ -20,7 +20,7 @@ const resultsTableBody = document.getElementById("resultsTableBody");
 const errorDiv = document.getElementById("error");
 
 // チーム一覧（1から13）
-const teamList = Array.from({ length: 13 }, (_, i) => `Team ${i + 1}`);
+const teamList = Array.from({ length: 13 }, (_, i) => `team${i + 1}`);
 
 // Votesコレクションを集計して表示
 async function loadVotesAndDisplay() {
@@ -33,7 +33,7 @@ async function loadVotesAndDisplay() {
     votesSnapshot.forEach((doc) => {
       const data = doc.data();
       console.log("Processing document:", doc.id, data); // デバッグ用ログ
-      const team = data.team;
+      const team = data.team.toLowerCase(); // team 名を小文字に正規化
       const points = data.points;
 
       if (!results[team]) {
@@ -66,6 +66,9 @@ async function loadVotesAndDisplay() {
     errorDiv.textContent = "投票結果の取得に失敗しました。再度お試しください。";
   }
 }
+
+// ページ読み込み時に実行
+document.addEventListener("DOMContentLoaded", loadVotesAndDisplay);
 
 // ページ読み込み時に実行
 document.addEventListener("DOMContentLoaded", loadVotesAndDisplay);
