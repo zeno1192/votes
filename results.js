@@ -19,6 +19,9 @@ const db = getFirestore(app);
 const resultsTableBody = document.getElementById("resultsTableBody");
 const errorDiv = document.getElementById("error");
 
+// チーム一覧（1から13）
+const teamList = Array.from({ length: 13 }, (_, i) => `Team ${i + 1}`);
+
 // Votesコレクションを集計し、Resultsコレクションに保存する関数
 async function aggregateVotesToResults() {
   try {
@@ -57,31 +60,27 @@ async function aggregateVotesToResults() {
 async function loadResults() {
   try {
     const resultsSnapshot = await getDocs(collection(db, "Results"));
+    const results = {};
+
+    // Resultsコレクションからデータを取得
+    resultsSnapshot.forEach((doc) => {
+      const data = doc.data();
+      results[data.teamName] = data.points || 0; // ポイントを格納
+    });
+
     resultsTableBody.innerHTML = ""; // テーブルを初期化
 
-    if (resultsSnapshot.empty) {
-      errorDiv.textContent = "表示するデータがありません。";
-      return;
-    }
-
-    // Resultsコレクションの各ドキュメントをテーブルに追加
-    resultsSnapshot.forEach((doc) => {
-      const result = doc.data();
+    // チームリストをループしてテーブルを作成
+    teamList.forEach((team) => {
       const row = document.createElement("tr");
 
       const teamCell = document.createElement("td");
-      teamCell.textContent = result.teamName || "不明";
+      teamCell.textContent = team;
       row.appendChild(teamCell);
 
       const pointsCell = document.createElement("td");
-      pointsCell.textContent = result.points || 0;
+      pointsCell.textContent = results[team] || 0; // 獲得ポイント（0でも表示）
       row.appendChild(pointsCell);
-
-      const dateCell = document.createElement("td");
-      dateCell.textContent = result.timestamp
-        ? new Date(result.timestamp.seconds * 1000).toLocaleString()
-        : "N/A";
-      row.appendChild(dateCell);
 
       resultsTableBody.appendChild(row);
     });
@@ -96,3 +95,4 @@ document.addEventListener("DOMContentLoaded", async () => {
   await aggregateVotesToResults(); // Votesを集計してResultsに保存
   await loadResults(); // Resultsを読み込んで表示
 });
+
