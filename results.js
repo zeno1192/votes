@@ -3,12 +3,12 @@ import { getFirestore, collection, getDocs, setDoc, doc, serverTimestamp } from 
 
 // Firebase 構成情報
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyCSJNkXlmr1xToKV6iR_o9Sp3gLsqqd6eA",
+  authDomain: "touhyouproject.firebaseapp.com",
+  projectId: "touhyouproject",
+  storageBucket: "touhyouproject.firebasestorage.app",
+  messagingSenderId: "662619066348",
+  appId: "1:662619066348:web:6924f4dfb8c47de7097ac9"
 };
 
 // Firebase 初期化
