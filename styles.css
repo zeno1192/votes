@@ -2,17 +2,14 @@
    基本スタイル
 ================================ */
 body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background: url('https://example.com/christmas-background.jpg') no-repeat center center fixed;
-  background-size: cover;
   margin: 0;
   padding: 0;
   font-family: 'Dancing Script', cursive;
+  background: url('https://example.com/christmas-background.jpg') no-repeat center center fixed;
+  background-size: cover;
   position: relative;
-  overflow: hidden; /* 雪が画面外に出ないように設定 */
+  overflow-x: hidden; /* 横スクロールを防ぐ */
+  min-height: 100vh; /* 縦方向のスクロールを可能に */
 }
 
 /* ================================
@@ -62,6 +59,7 @@ body {
   max-width: 400px; /* 最大幅 */
   width: 90%; /* 画面サイズに応じた幅 */
   box-sizing: border-box;
+  margin: 20px auto; /* 自動でセンター配置 */
 }
 
 /* ================================
@@ -152,4 +150,24 @@ tbody tr:nth-child(even) {
 ================================ */
 .hidden {
   display: none;
+}
+
+/* ================================
+   スクロール調整
+================================ */
+html {
+  overflow-y: auto; /* 縦スクロールを有効化 */
+}
+
+body::-webkit-scrollbar {
+  width: 8px; /* スクロールバーの幅 */
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+}
+
+body::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0.1);
 }
