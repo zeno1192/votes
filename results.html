@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>投票結果</title>
+  <link rel="stylesheet" href="./results.css">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- 雪のエフェクト -->
+  <div class="snow-container"></div>
+
+  <div class="container">
+    <h1>投票結果</h1>
+    <table id="resultsTable">
+      <thead>
+        <tr>
+          <th>チーム名</th>
+          <th>総ポイント</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- JavaScriptで結果を挿入 -->
+      </tbody>
+    </table>
+    <button id="backButton" class="btn">戻る</button>
+  </div>
+
+  <!-- 雪エフェクトスクリプト -->
+  <script>
+    function createSnowflakes() {
+      const snowContainer = document.querySelector('.snow-container');
+      for (let i = 0; i < 30; i++) {
+        const snowflake = document.createElement('div');
+        snowflake.className = 'snowflake';
+        snowflake.textContent = '❄️';
+        snowflake.style.left = Math.random() * 100 + '%';
+        snowflake.style.animationDelay = Math.random() * 5 + 's';
+        snowflake.style.animationDuration = 5 + Math.random() * 5 + 's';
+        snowContainer.appendChild(snowflake);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', createSnowflakes);
+  </script>
+  <script type="module" src="./results.js"></script>
+</body>
+</html>

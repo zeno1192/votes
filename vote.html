@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>投票画面</title>
+  <link rel="stylesheet" href="./styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- 雪のエフェクトを表示する領域 -->
+  <div class="snow-container"></div>
+
+  <div class="container">
+    <h1>投票画面</h1>
+    <div id="user-info">ログイン中: <span id="userEmail">--</span></div>
+    <div id="balance">残高: <span id="userPoints">--</span> ポイント</div>
+
+    <form id="voteForm">
+      <label for="team">投票するチームを選択:</label>
+      <select id="team" required>
+        <option value="" disabled selected>チームを選択してください</option>
+        <option value="team1">Team 1</option>
+        <option value="team2">Team 2</option>
+        <option value="team3">Team 3</option>
+        <option value="team4">Team 4</option>
+        <option value="team5">Team 5</option>
+        <option value="team6">Team 6</option>
+        <option value="team7">Team 7</option>
+        <option value="team8">Team 8</option>
+        <option value="team9">Team 9</option>
+        <option value="team10">Team 10</option>
+        <option value="team11">Team 11</option>
+        <option value="team12">Team 12</option>
+        <option value="team13">Team 13</option>
+      </select>
+      <label for="points">投票するポイント数:</label>
+      <input type="number" id="points" placeholder="ポイント数" required min="1" />
+      <button type="submit" class="btn">投票</button>
+    </form>
+
+    <h2>投票履歴</h2>
+    <table id="historyTable">
+      <thead>
+        <tr>
+          <th>チーム名</th>
+          <th>ポイント</th>
+          <th>日時</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- JavaScriptで履歴を挿入 -->
+      </tbody>
+    </table>
+
+    <button id="logoutButton" class="btn">ログアウト</button>
+  </div>
+
+  <!-- 雪エフェクトスクリプト -->
+  <script>
+    function createSnowflakes() {
+      const snowContainer = document.querySelector('.snow-container');
+      for (let i = 0; i < 30; i++) {
+        const snowflake = document.createElement('div');
+        snowflake.className = 'snowflake';
+        snowflake.textContent = '❄️';
+        snowflake.style.left = Math.random() * 100 + '%';
+        snowflake.style.animationDelay = Math.random() * 5 + 's';
+        snowflake.style.animationDuration = 5 + Math.random() * 5 + 's';
+        snowContainer.appendChild(snowflake);
+      }
+    }
+
+    // ページ読み込み時に雪を生成
+    document.addEventListener('DOMContentLoaded', createSnowflakes);
+  </script>
+
+  <script type="module" src="./vote.js"></script>
+</body>
+</html>

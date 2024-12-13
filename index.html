@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ログイン画面</title>
+  <link rel="stylesheet" href="./styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- 雪のエフェクトを表示する領域 -->
+  <div class="snow-container"></div>
+
+  <div class="container">
+    <h1>ログイン / 新規登録</h1>
+    <!-- ログインフォーム -->
+    <form id="loginForm">
+      <div class="form-group">
+        <input type="email" id="loginEmail" placeholder="メールアドレス" required />
+        <input type="password" id="loginPassword" placeholder="パスワード" required />
+      </div>
+      <button type="submit" class="btn">ログイン</button>
+    </form>
+
+    <!-- 新規登録フォーム -->
+    <form id="registerForm" class="hidden">
+      <div class="form-group">
+        <input type="email" id="registerEmail" placeholder="メールアドレス" required />
+        <input type="password" id="registerPassword" placeholder="パスワード" required />
+      </div>
+      <button type="submit" class="btn">新規登録</button>
+    </form>
+
+    <!-- 切り替えボタン -->
+    <p>
+      <button id="toggleButton" class="link">新規登録はこちら</button>
+    </p>
+  </div>
+
+  <!-- 雪エフェクトスクリプト -->
+  <script>
+    function createSnowflakes() {
+      const snowContainer = document.querySelector('.snow-container');
+      for (let i = 0; i < 30; i++) {
+        const snowflake = document.createElement('div');
+        snowflake.className = 'snowflake';
+        snowflake.textContent = '❄️';
+        snowflake.style.left = Math.random() * 100 + '%';
+        snowflake.style.animationDelay = Math.random() * 5 + 's';
+        snowflake.style.animationDuration = 5 + Math.random() * 5 + 's';
+        snowContainer.appendChild(snowflake);
+      }
+    }
+
+    // ページ読み込み時に雪を生成
+    document.addEventListener('DOMContentLoaded', createSnowflakes);
+  </script>
+
+  <script type="module" src="./login.js"></script>
+</body>
+</html>
