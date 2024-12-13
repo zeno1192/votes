@@ -171,3 +171,9 @@ body::-webkit-scrollbar-thumb {
 body::-webkit-scrollbar-track {
   background-color: rgba(0, 0, 0, 0.1);
 }
+/* ================================
+   非表示用クラス
+================================ */
+.hidden {
+  display: none;
+}
