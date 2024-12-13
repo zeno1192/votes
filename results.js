@@ -1,6 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
-import { getFirestore, collection, getDocs, setDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js";
 
 // Firebase 構成情報
 const firebaseConfig = {
@@ -15,33 +14,22 @@ const firebaseConfig = {
 // Firebase 初期化
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const auth = getAuth(app);
 
 // HTML 要素
 const resultsTableBody = document.getElementById("resultsTableBody");
 const errorDiv = document.getElementById("error");
 
-// 認証チェック
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    console.log("ログイン済み:", user.email);
-  } else {
-    console.error("ユーザーがログインしていません。ログインが必要です。");
-    errorDiv.textContent = "ログインが必要です。";
-  }
-});
+// チーム一覧（1から13）
+const teamList = Array.from({ length: 13 }, (_, i) => `Team ${i + 1}`);
 
-// Votesコレクションを集計し、Resultsコレクションに保存する関数
-async function aggregateVotesToResults() {
+// Votesコレクションを集計して表示する関数
+async function loadVotesAndDisplay() {
   try {
     const votesSnapshot = await getDocs(collection(db, "Votes"));
-    console.log("Votes Snapshot:", votesSnapshot);
-
     const results = {};
 
     // Votesコレクションの各ドキュメントを集計
     votesSnapshot.forEach((doc) => {
-      console.log("Processing document:", doc.id, doc.data());
       const data = doc.data();
       const team = data.team;
       const points = data.points;
@@ -49,41 +37,14 @@ async function aggregateVotesToResults() {
       if (!results[team]) {
         results[team] = 0; // 初期化
       }
-      results[team] += points; // 加算
+      results[team] += points; // ポイントを加算
     });
 
-    // Resultsコレクションに保存
-    for (const [teamName, points] of Object.entries(results)) {
-      console.log(`Saving result for ${teamName}: ${points} points`);
-      await setDoc(doc(db, "Results", teamName), {
-        teamName,
-        points,
-        timestamp: serverTimestamp(), // タイムスタンプ
-      });
-    }
+    // テーブルを初期化
+    resultsTableBody.innerHTML = "";
 
-    console.log("Votesの集計が完了し、Resultsに保存されました！");
-  } catch (error) {
-    console.error("Votes集計中にエラーが発生しました:", error);
-    errorDiv.textContent = "Votes集計中にエラーが発生しました。";
-  }
-}
-
-// Resultsコレクションを取得し、テーブルに表示する関数
-async function loadResults() {
-  try {
-    const resultsSnapshot = await getDocs(collection(db, "Results"));
-    const results = {};
-
-    resultsSnapshot.forEach((doc) => {
-      const data = doc.data();
-      results[data.teamName] = data.points || 0; // ポイントを格納
-    });
-
-    resultsTableBody.innerHTML = ""; // テーブルを初期化
-
-    // チーム一覧をループしてテーブルを作成
-    Array.from({ length: 13 }, (_, i) => `Team ${i + 1}`).forEach((team) => {
+    // チームごとにテーブル行を作成
+    teamList.forEach((team) => {
       const row = document.createElement("tr");
 
       const teamCell = document.createElement("td");
@@ -96,14 +57,13 @@ async function loadResults() {
 
       resultsTableBody.appendChild(row);
     });
+
+    console.log("Votesの集計が完了しました！");
   } catch (error) {
-    console.error("Resultsの取得中にエラーが発生しました:", error);
+    console.error("Votesの集計中にエラーが発生しました:", error);
     errorDiv.textContent = "投票結果の取得に失敗しました。再度お試しください。";
   }
 }
 
 // ページ読み込み時に実行
-document.addEventListener("DOMContentLoaded", async () => {
-  await aggregateVotesToResults(); // Votesを集計してResultsに保存
-  await loadResults(); // Resultsを読み込んで表示
-});
+document.addEventListener("DOMContentLoaded", loadVotesAndDisplay);
