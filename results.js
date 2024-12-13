@@ -12,7 +12,6 @@ const firebaseConfig = {
   appId: "1:662619066348:web:6924f4dfb8c47de7097ac9"
 };
 
-
 // Firebase 初期化
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -22,15 +21,12 @@ const auth = getAuth(app);
 const resultsTableBody = document.getElementById("resultsTableBody");
 const errorDiv = document.getElementById("error");
 
-// チーム一覧（1から13）
-const teamList = Array.from({ length: 13 }, (_, i) => `Team ${i + 1}`);
-
 // 認証チェック
 onAuthStateChanged(auth, (user) => {
   if (user) {
     console.log("ログイン済み:", user.email);
   } else {
-    console.error("ユーザーがログインしていません！");
+    console.error("ユーザーがログインしていません。ログインが必要です。");
     errorDiv.textContent = "ログインが必要です。";
   }
 });
@@ -51,9 +47,9 @@ async function aggregateVotesToResults() {
       const points = data.points;
 
       if (!results[team]) {
-        results[team] = 0; // チームがまだない場合、初期化
+        results[team] = 0; // 初期化
       }
-      results[team] += points; // ポイントを加算
+      results[team] += points; // 加算
     });
 
     // Resultsコレクションに保存
@@ -62,14 +58,14 @@ async function aggregateVotesToResults() {
       await setDoc(doc(db, "Results", teamName), {
         teamName,
         points,
-        timestamp: serverTimestamp(), // 最新のタイムスタンプを記録
+        timestamp: serverTimestamp(), // タイムスタンプ
       });
     }
 
     console.log("Votesの集計が完了し、Resultsに保存されました！");
   } catch (error) {
     console.error("Votes集計中にエラーが発生しました:", error);
-    errorDiv.textContent = "集計中にエラーが発生しました。";
+    errorDiv.textContent = "Votes集計中にエラーが発生しました。";
   }
 }
 
@@ -79,7 +75,6 @@ async function loadResults() {
     const resultsSnapshot = await getDocs(collection(db, "Results"));
     const results = {};
 
-    // Resultsコレクションからデータを取得
     resultsSnapshot.forEach((doc) => {
       const data = doc.data();
       results[data.teamName] = data.points || 0; // ポイントを格納
@@ -87,8 +82,8 @@ async function loadResults() {
 
     resultsTableBody.innerHTML = ""; // テーブルを初期化
 
-    // チームリストをループしてテーブルを作成
-    teamList.forEach((team) => {
+    // チーム一覧をループしてテーブルを作成
+    Array.from({ length: 13 }, (_, i) => `Team ${i + 1}`).forEach((team) => {
       const row = document.createElement("tr");
 
       const teamCell = document.createElement("td");
@@ -112,4 +107,3 @@ document.addEventListener("DOMContentLoaded", async () => {
   await aggregateVotesToResults(); // Votesを集計してResultsに保存
   await loadResults(); // Resultsを読み込んで表示
 });
-
