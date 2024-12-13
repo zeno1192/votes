@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
 import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js";
 
-// Firebase 構成情報
+// Firebase 設定
 const firebaseConfig = {
   apiKey: "AIzaSyCSJNkXlmr1xToKV6iR_o9Sp3gLsqqd6eA",
   authDomain: "touhyouproject.firebaseapp.com",
@@ -22,15 +22,17 @@ const errorDiv = document.getElementById("error");
 // チーム一覧（1から13）
 const teamList = Array.from({ length: 13 }, (_, i) => `Team ${i + 1}`);
 
-// Votesコレクションを集計して表示する関数
+// Votesコレクションを集計して表示
 async function loadVotesAndDisplay() {
   try {
+    console.log("Votesコレクションからデータを取得中...");
     const votesSnapshot = await getDocs(collection(db, "Votes"));
     const results = {};
 
-    // Votesコレクションの各ドキュメントを集計
+    // Votesコレクション内の各ドキュメントを処理
     votesSnapshot.forEach((doc) => {
       const data = doc.data();
+      console.log("Processing document:", doc.id, data); // デバッグ用ログ
       const team = data.team;
       const points = data.points;
 
@@ -39,6 +41,8 @@ async function loadVotesAndDisplay() {
       }
       results[team] += points; // ポイントを加算
     });
+
+    console.log("集計結果:", results);
 
     // テーブルを初期化
     resultsTableBody.innerHTML = "";
@@ -57,8 +61,6 @@ async function loadVotesAndDisplay() {
 
       resultsTableBody.appendChild(row);
     });
-
-    console.log("Votesの集計が完了しました！");
   } catch (error) {
     console.error("Votesの集計中にエラーが発生しました:", error);
     errorDiv.textContent = "投票結果の取得に失敗しました。再度お試しください。";
