@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
 import { getFirestore, collection, getDocs, setDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js";
 
 // Firebase 構成情報
 const firebaseConfig = {
@@ -11,9 +12,11 @@ const firebaseConfig = {
   appId: "1:662619066348:web:6924f4dfb8c47de7097ac9"
 };
 
+
 // Firebase 初期化
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
 // HTML 要素
 const resultsTableBody = document.getElementById("resultsTableBody");
@@ -22,14 +25,27 @@ const errorDiv = document.getElementById("error");
 // チーム一覧（1から13）
 const teamList = Array.from({ length: 13 }, (_, i) => `Team ${i + 1}`);
 
+// 認証チェック
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    console.log("ログイン済み:", user.email);
+  } else {
+    console.error("ユーザーがログインしていません！");
+    errorDiv.textContent = "ログインが必要です。";
+  }
+});
+
 // Votesコレクションを集計し、Resultsコレクションに保存する関数
 async function aggregateVotesToResults() {
   try {
     const votesSnapshot = await getDocs(collection(db, "Votes"));
+    console.log("Votes Snapshot:", votesSnapshot);
+
     const results = {};
 
     // Votesコレクションの各ドキュメントを集計
     votesSnapshot.forEach((doc) => {
+      console.log("Processing document:", doc.id, doc.data());
       const data = doc.data();
       const team = data.team;
       const points = data.points;
@@ -42,6 +58,7 @@ async function aggregateVotesToResults() {
 
     // Resultsコレクションに保存
     for (const [teamName, points] of Object.entries(results)) {
+      console.log(`Saving result for ${teamName}: ${points} points`);
       await setDoc(doc(db, "Results", teamName), {
         teamName,
         points,
